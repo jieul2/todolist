@@ -25,11 +25,10 @@ taskController.getTask = async (req, res) => {
 taskController.updateCompleteTask = async (req, res) => {
   try {
     const { id } = req.params;
-    const task = await Task.findById(id);
     const updatedTask = await Task.findByIdAndUpdate(
       id,
-      { isComplete: !task.isComplete },
-      { new: true },
+      [{ $set: { isComplete: { $not: "$isComplete" } } }],
+      { new: true }
     );
 
     res.status(200).json({ status: "ok", data: updatedTask });
